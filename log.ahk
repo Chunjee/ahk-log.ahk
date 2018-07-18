@@ -1,5 +1,6 @@
-Class log_class
-{ ; Class that handles writing to a log file
+Class Log_class
+{ 
+	; Class that handles writing to a log file
 	; This class makes working with a log file much easier.  Once created, you can write to a log file with a single method call.
 	; Each instance of the object supports a single log file (and its inactive older versions).  To use multiple log files (with separate names) create multiple instances.
 	; The log files will be tidied up and rotated automatically.
@@ -67,6 +68,7 @@ Class log_class
 		this.isLogClassTurnedOff   := false
 		this._pendingEntries       := []
 		this._ignorePendingEntries := false
+		this.application		   := ""
 
 		; Error checking done in property get/set
 		if (aMaxNumbOldLogs = "") {
@@ -115,10 +117,6 @@ Class log_class
 		{
 			return this._classVersion
 		}
-	}
-
-	set_projectname(para_input) {
-		this.projectname := para_input
 	}
 
 	; List
@@ -290,6 +288,9 @@ Class log_class
 		}
 	}
 
+	set_applicationname(para_input) {
+		this.application := para_input
+	}
 	;EndRegion
 	
 	
@@ -341,7 +342,6 @@ Class log_class
 		{ ; if the Dir exists, check if the file exists and handle accordingly
 			if (overwriteExistingFile)
 			{
-				msgbox, DELETING!!!
 				FileDelete, %aCurrentFileName_FullPath%
 				errLvl := ErrorLevel
 			}
@@ -493,7 +493,7 @@ Class log_class
         logobject.utc := A_NowUTC
         logobject.machine := A_ComputerName
         logobject.userrunning := A_UserName
-        logobject.application := this.projectname
+        logobject.application := this.application
 
 		; stringify and append `n
         entryString := JSON.stringify(logobject)
@@ -634,9 +634,7 @@ Class log_class
 				}
 				
 				; Move the file
-				msgbox, % "moving! " aCurrentFileName_FullPath " to " aNewLogFilename_FullPath
 				FileMove, %aCurrentFileName_FullPath%, %aNewLogFilename_FullPath%, %overwriteExistingFile%
-				msgbox, % ErrorLevel
 				errLvl := ErrorLevel
 			}
 		}
