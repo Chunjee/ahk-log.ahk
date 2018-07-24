@@ -1,4 +1,4 @@
-#Include ../lib/json/json.ahk
+#Include ../json/json.ahk
 
 Class Log_class
 { 
