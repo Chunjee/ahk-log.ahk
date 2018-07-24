@@ -1,0 +1,19 @@
+{
+    "name": "log.ahk",
+    "version": "0.1.0",
+    "description": "Class to add robust logging to ahk",
+    "main": "log.ahk",
+    "scripts": {
+        "newinstall": "yarn install --modules-folder ./lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Chunjee/log.ahk"
+    },
+    "dependencies": {
+        "cpuload": "chunjee/cpuload.ahk"
+    },
+    
+    "author": "uncredited",
+    "license": "MIT"
+}
