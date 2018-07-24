@@ -1,3 +1,5 @@
+#Include ../lib/json/json.ahk
+
 Class Log_class
 { 
 	; Class that handles writing to a log file
