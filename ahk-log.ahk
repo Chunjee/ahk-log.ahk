@@ -1,8 +1,5 @@
-#Include ./json/json.ahk
-
 Class Log_class
-{ 
-	; Class that handles writing to a log file
+{ ; Class that handles writing to a log file
 	; This class makes working with a log file much easier.  Once created, you can write to a log file with a single method call.
 	; Each instance of the object supports a single log file (and its inactive older versions).  To use multiple log files (with separate names) create multiple instances.
 	; The log files will be tidied up and rotated automatically.
@@ -38,8 +35,8 @@ Class Log_class
 		; 	aLogDir -> 1/3 of the log's full filename (filename -> aLogDir\aLogBaseFilename.aLogExten).  The default is A_WorkingDir.
 		; 	aLogExten -> 1/3 of the log's full filename (filename -> aLogDir\aLogBaseFilename.aLogExten).  The default is "log".
 		
-		this._classVersion := 0.1.0
-		this._classAlterDate := "2018-07-17"
+		this._classVersion := 0.2.0
+		this._classAlterDate := "2018-09-30"
 		
 		
 		; establish any default values
@@ -55,7 +52,8 @@ Class Log_class
 		this.footerString_Default       := ""
 		this.useRecycleBin_Default      := false
 		this.printStackMaxDepth_Default := 5 ; maximum number of parent function calls to include the PrintStack function
-		this.isAutoWriteEntries_Default := false
+		this.isAutoWriteEntries_Default := true
+		this.maxPendingEntries			:= 200 ; maximum number of log entries to store in buffer
 
 		; initialize any properties (not received as inputs)
 		this.logsFileEncoding      := this.logsFileEncoding_Default
@@ -464,7 +462,7 @@ Class Log_class
 		; now add the entry to file/array
 		; add everything to the array, then if auto writing, write out the array
 		retVal := this._pendingEntries.push(entryString) ; God I love push/pop. I don't know why but I have loved those 2 functions for decades now.
-		if(aIsAutoWriteEntries) 
+		if(aIsAutoWriteEntries || this.pendingEntries.MaxIndex() >= this.maxPendingEntries) 
 		{ ; if auto writing, write out the array
 			errLvl := this.savePendingEntriesToLog()
 		}
@@ -472,7 +470,7 @@ Class Log_class
 	}
 
 
-    add(entryString="", addNewLine=true)
+    add(entryString="", loglevel="INFO")
 	{ ; Adds a new stringified json object to the log file (or pending entries array, see aIsAutoWriteEntries).  Creates the entry as preEntryString . entryString . postEntryString
 
 		if (this.isLogClassTurnedOff) { ; should this method/class be turned off?
@@ -494,19 +492,24 @@ Class Log_class
         logobject.time := l_time
         logobject.utc := A_NowUTC
         logobject.machine := A_ComputerName
-        logobject.userrunning := A_UserName
+        logobject.username := A_UserName
         logobject.application := this.application
+        logobject.level := loglevel
+        logobject.process := A_ScriptHwnd
 
 		; stringify and append `n
-        entryString := JSON.stringify(logobject)
-        if(addNewLine) {
-			entryString := entryString . "`n"
-		}
+        entryString := JSON.stringify(logobject) "`n"
+
+
+        ; if(addNewLine) {
+		; 	entryString := entryString . "`n"
+		; }
 
         ; now add the entry to file/array
 		; add everything to the array, then if auto writing, write out the array
 		retVal := this._pendingEntries.push(entryString) ; God I love push/pop. I don't know why but I have loved those 2 functions for decades now.
-		if(aIsAutoWriteEntries) { ; if auto writing, write out the array
+		if(aIsAutoWriteEntries || this.pendingEntries.MaxIndex() >= this.maxPendingEntries) 
+		{ ; if auto writing, write out the array
 			errLvl := this.savePendingEntriesToLog()
 		}
 		return errLvl
