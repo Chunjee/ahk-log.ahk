@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Chunjee/log.ahk"
+        "url": "https://github.com/Chunjee/ahk-log.ahk"
     },
     "dependencies": {
         "cpuload": "chunjee/cpuload.ahk",
