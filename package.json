@@ -11,10 +11,8 @@
         "url": "https://github.com/Chunjee/ahk-log.ahk"
     },
     "dependencies": {
-        "cpuload": "chunjee/cpuload.ahk",
         "json": "chunjee/json.ahk"
     },
-    
     "author": "uncredited",
     "license": "MIT"
 }
