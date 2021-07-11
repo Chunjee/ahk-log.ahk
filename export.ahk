@@ -10,8 +10,8 @@ class log
 	; A brief usage example is as follows:
 	;	global log := new log(“MyLogFile”)
 	;	log.initalizeNewLogFile(false, “Header text to appear at the start of the new file”)
-	;	log.addLogEntry(“Your 1st message to put in the log file”)
-	;	log.addLogEntry(“Your next message to put in the log file”)
+	;	log.addString(“Your 1st message to put in the log file”)
+	;	log.addString(“Your next message to put in the log file”)
 	;	log.finalizeLog(“Footer text to appear at the very end of your log, which you are done with.”)
 	;
 	; This class is inspired (very much so) by the pre-AHK built-in classes (circa 2009) file Log.ahk
@@ -22,7 +22,7 @@ class log
 	;	* $time or %A_Now% expands to the time the log entry is written (as formatted according to this.logsTimeFormat).
 	;	* $printStack expands to a list of the function calls which caused the log entry to be written.
 	;	* %Var% expands to whatever value variable Var is, but Var must be a global/built-in variable.
-	; These String property variables may be used in the log entries too (e.g., by this.addLogEntry(entry))
+	; These String property variables may be used in the log entries too (e.g., by this.addString(entry))
 
 
 	__New(aLogBaseFilename, aLogDir="", aLogExten="", aMaxSizeMBLogFile="", aMaxNumbOldLogs="")
@@ -112,8 +112,8 @@ class log
 	; List
 	; -------------------
 	; currentFileName_FullPath ; The current log filename, in full path form.  All other filename related properties read/write to this as the master/keeper of the filename 
-	; preEntryString           ; A string to prepend (before) to any log entry (made via addLogEntry()).
-	; postEntryString          ; A string to append (after) to any log entry (made via addLogEntry()).
+	; preEntryString           ; A string to prepend (before) to any log entry (made via addString()).
+	; postEntryString          ; A string to append (after) to any log entry (made via addString()).
 	; headerString             ; A string to be placed at the start of every new logfile (made via initalizeNewLogFile()).
 	; footerString             ; A string to be placed at the end of every new logfile (made via finalizeLog()).
 	; logsFileEncoding         ; The encoding for the logfile (see AHK help page on FileEncoding).  The default is UTF-8
@@ -121,8 +121,8 @@ class log
 	; maxNumbOldLogs           ; The maximum number of old (i.e., indexed; e.g., MyLogFile_1.log) files to keep when rotating/cleaning the logs
 	; maxSizeMBLogFile         ; The maximum size (in megabytes) of the log file before a new file is automatically created.  The size is not super-strict.  If you really try you can break this, especially is headerString creates a file bigger than your size limit.
 	; useRecycleBin            ; Should deleted files be deleted or moved to the RecycleBin?  The default is true (to the Recycle Bin).
-	; isAutoWriteEntries       ; New log entries can be written immediately (the default), or saved up in the pendingEntries array (to be written later).  Useful if you want to limit the number of times a logfile is edited in a given time period (e.g., if your logfile is in a cloud synched folder).  If changed (to true) while entries are pending, they will all be written on next addLogEntry().
-	; isLogClassTurnedOff      ; When true, pretty much every function instantly exits ** with NO error value ** (so no entries may be added/files moved).  (The default is: false).  Useful for turning off logging ability, especially when your addLogEntry() calls are buried deep in some class/function and you don't want to hunt them down and comment them out.
+	; isAutoWriteEntries       ; New log entries can be written immediately (the default), or saved up in the pendingEntries array (to be written later).  Useful if you want to limit the number of times a logfile is edited in a given time period (e.g., if your logfile is in a cloud synched folder).  If changed (to true) while entries are pending, they will all be written on next addString().
+	; isLogClassTurnedOff      ; When true, pretty much every function instantly exits ** with NO error value ** (so no entries may be added/files moved).  (The default is: false).  Useful for turning off logging ability, especially when your addString() calls are buried deep in some class/function and you don't want to hunt them down and comment them out.
 	; printStackMaxDepth       ; When expanding the String property variable $printStack how far back in call chain should be reported?  The default is 5
 	; _pendingEntries[]        ; (Internal use only)  The array of unwritten log entries.
 	; _ignorePendingEntries    ; (Internal use only)  If when writing the unwritten log entries a new file needs to be created (due to size), this flags initalizeNewLogFile()/finalizeLog() to not reset the pendingEntries[]
@@ -405,7 +405,7 @@ class log
 		return errLvl
 	}
 	
-	addLogEntry(entryString="", addNewLine=true, usePreEntryString=true, usePostEntryString=true)
+	addString(entryString="", addNewLine=true, usePreEntryString=true, usePostEntryString=true)
 	{ ; Adds a new entry (string) to the log file (or pending entries array, see aIsAutoWriteEntries).  Creates the entry as preEntryString . entryString . postEntryString
 	; The <name>String properties (e.g., preEntryString, HeaderString, etc.) may be set via initalizeNewLogFile() or individually.  
 	; They are strings that will be applied automatically when creating/ending a log file or adding a new log message/entry.  This allows you to apply a common format (or information) to every logfile or log entry.
