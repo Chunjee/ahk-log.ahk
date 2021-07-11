@@ -82,16 +82,16 @@ class log
 		}
 
 		; now error check the filename input values
-		if(aLogDir="")
+		if (aLogDir="")
 			aLogDir := this.logDir_Default
-		if(aLogExten="")
+		if (aLogExten="")
 			aLogExten := this.logExten_Default
-		if(aLogBaseFilename="")
+		if (aLogBaseFilename="")
 		{ ; use the ScriptName without the extension (i.e., *.ahk or *.exe)
 			SplitPath, A_ScriptFullPath, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
 			aLogBaseFilename := OutNameNoExt
 		}
-		else if(this.isFilenameFullyPathed(aLogBaseFilename))
+		else if (this.isFilenameFullyPathed(aLogBaseFilename))
 		{ ; ignore the other given filename inputs
 			SplitPath, aLogBaseFilename, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
 			aLogDir := OutDir ; overwrite any aLogDir we were given as input
@@ -225,7 +225,7 @@ class log
 		set
 		{
 			aCurrentFileName := value
-			if(this.isFilenameFullyPathed(aCurrentFileName))
+			if (this.isFilenameFullyPathed(aCurrentFileName))
 			{
 				this.currentFileName_FullPath := aCurrentFileName
 			}
@@ -309,17 +309,17 @@ class log
 		errLvl := false
 		
 		; UNDEF is used so the properties may have a "" value
-		if(aHeaderString != "UNDEF")
+		if (aHeaderString != "UNDEF")
 			this.headerString := aHeaderString
-		if(aPreEntryString != "UNDEF")
+		if (aPreEntryString != "UNDEF")
 			this.preEntryString := aPreEntryString
-		if(aPostEntryString != "UNDEF")
+		if (aPostEntryString != "UNDEF")
 			this.postEntryString := aPostEntryString
-		if(aFooterString != "UNDEF")
+		if (aFooterString != "UNDEF")
 			this.footerString := aFooterString
-		if(aLogsFileEncoding != "UNDEF")
+		if (aLogsFileEncoding != "UNDEF")
 			this.logsFileEncoding := aLogsFileEncoding
-		if(!this._ignorePendingEntries)
+		if (!this._ignorePendingEntries)
 			this._pendingEntries := []
 		this._ignorePendingEntries := false ; reset IgnoreVal regardless if it was set or not
 
@@ -328,7 +328,7 @@ class log
 			FileCreateDir, %aLogDir%
 			errLvl := ErrorLevel
 		}
-		else if( FileExist(aCurrentFileName_FullPath) )
+		else if ( FileExist(aCurrentFileName_FullPath) )
 		{ ; if the Dir exists, check if the file exists and handle accordingly
 			if (overwriteExistingFile)
 			{
@@ -342,7 +342,7 @@ class log
 			}
 		}
 		
-		if(!errLvl)
+		if (!errLvl)
 		{ ; now write the header string
 			aLogFileEncoding := this.logsFileEncoding
 			aHeaderString := this.headerString
@@ -370,7 +370,7 @@ class log
 		aMaxNumbOldLogs := this.maxNumbOldLogs
 
 		; UNDEF is used so the properties may have a "" value
-		if(aFooterString != "UNDEF")
+		if (aFooterString != "UNDEF")
 			this.footerString := aFooterString
 		
 		if (!InStr(FileExist(aLogDir), "D"))
@@ -379,9 +379,9 @@ class log
 			errLvl := ErrorLevel
 		}
 
-		if(!errLvl)
+		if (!errLvl)
 		{ ; write any pending entries & footer to the file
-			if(!this._ignorePendingEntries)
+			if (!this._ignorePendingEntries)
 			{ ; if this got called do to a log exceeding its size limit, we'll saving the pending entries for the next log file
 				errLvl := this.savePendingEntriesToLog()
 				; if a large enough number of entries are pending multiple log files may be written
@@ -395,7 +395,7 @@ class log
 		}
 
 		; clean up the multiple log files
-		if(aMaxNumbOldLogs > 0) ; if we only have 1 log file, then leave it alone (otherwise move/tidy deletes it, and you have no log files)
+		if (aMaxNumbOldLogs > 0) ; if we only have 1 log file, then leave it alone (otherwise move/tidy deletes it, and you have no log files)
 		{
 			errLvl += this.moveLog()
 			errLvl += this.tidyLogs()
@@ -434,16 +434,16 @@ class log
 		; transform (unpack the variables) in each string
 		; then concatenate them together, as desired
 		entryString := this.transformStringVars(entryString)
-		if(usePreEntryString)
+		if (usePreEntryString)
 		{
 			aPreEntryString := this.transformStringVars(aPreEntryString)
 			entryString := aPreEntryString . entryString
 		}
-		if(addNewLine)
+		if (addNewLine)
 		{
 			entryString := entryString . "`n"
 		}
-		if(usePostEntryString)
+		if (usePostEntryString)
 		{
 			aPostEntryString := this.transformStringVars(aPostEntryString)
 			entryString := entryString . aPostEntryString
@@ -452,7 +452,7 @@ class log
 		; now add the entry to file/array
 		; add everything to the array, then if auto writing, write out the array
 		retVal := this._pendingEntries.push(entryString) ; God I love push/pop. I don't know why but I have loved those 2 functions for decades now.
-		if(aIsAutoWriteEntries || this.pendingEntries.MaxIndex() >= this.maxPendingEntries) 
+		if (aIsAutoWriteEntries || this.pendingEntries.MaxIndex() >= this.maxPendingEntries) 
 		{ ; if auto writing, write out the array
 			errLvl := this.savePendingEntriesToLog()
 		}
@@ -460,12 +460,12 @@ class log
 	}
 
 
-    add(entryString="", loglevel="INFO")
+	add(entryString="", loglevel="INFO")
 	{ ; Adds a new stringified json object to the log file (or pending entries array, see aIsAutoWriteEntries).  Creates the entry as preEntryString . entryString . postEntryString
 
 		if (this.isLogClassTurnedOff) { ; should this method/class be turned off?
-            return false ; if so, exit out before doing anything.
-        }
+			return false ; if so, exit out before doing anything.
+		}
 
 		aPreEntryString := this.preEntryString
 		aPostEntryString := this.postEntryString
@@ -475,30 +475,30 @@ class log
 		; transform (unpack the variables) in each string
 		entryString := this.transformStringVars(entryString)
 		
-        ;; Create the misc data for our log entry
-        logobject := {}
+		;; Create the misc data for our log entry
+		logobject := {}
 		logobject.msg := entryString
-        FormatTime, l_time , A_Now, yyyy-MM-dd HH:mm:ss ;2018-06-25 16:14:35
-        logobject.time := l_time
-        logobject.utc := A_NowUTC
-        logobject.machine := A_ComputerName
-        logobject.username := A_UserName
-        logobject.application := this.application
-        logobject.level := loglevel
-        logobject.process := A_ScriptHwnd
+		FormatTime, l_time , A_Now, yyyy-MM-dd HH:mm:ss ;2018-06-25 16:14:35
+		logobject.time := l_time
+		logobject.utc := A_NowUTC
+		logobject.machine := A_ComputerName
+		logobject.username := A_UserName
+		logobject.application := this.application
+		logobject.level := loglevel
+		logobject.process := A_ScriptHwnd
 
 		; stringify and append `n
-        entryString := JSON.stringify(logobject) "`n"
+		entryString := JSON.stringify(logobject) "`n"
 
 
-        ; if(addNewLine) {
+		; if (addNewLine) {
 		; 	entryString := entryString . "`n"
 		; }
 
-        ; now add the entry to file/array
+		; now add the entry to file/array
 		; add everything to the array, then if auto writing, write out the array
 		retVal := this._pendingEntries.push(entryString) ; God I love push/pop. I don't know why but I have loved those 2 functions for decades now.
-		if(aIsAutoWriteEntries || this.pendingEntries.MaxIndex() >= this.maxPendingEntries) 
+		if (aIsAutoWriteEntries || this.pendingEntries.MaxIndex() >= this.maxPendingEntries) 
 		{ ; if auto writing, write out the array
 			errLvl := this.savePendingEntriesToLog()
 		}
@@ -524,21 +524,21 @@ class log
 			errLvl := ErrorLevel
 		}
 		
-		if(!errLvl)
+		if (!errLvl)
 		{
 			arrayLength := this._pendingEntries.length()
 			Loop, %arrayLength% ; this should be a contiguous array 
 			{ ; start writing out the array
 				; is the log file too big to add more to it?
-				if(aMaxSizeMBLogFile > 0) ; < or = 0 is unlimited size
+				if (aMaxSizeMBLogFile > 0) ; < or = 0 is unlimited size
 				{
-					if(FileExist(aCurrentFileName_FullPath)) ; FileGetSize fails if the file doesn't exist
+					if (FileExist(aCurrentFileName_FullPath)) ; FileGetSize fails if the file doesn't exist
 					{ 
 						FileGetSize, logSize, %aCurrentFileName_FullPath% ; get in bytes because the K & M options return integers and this annoys me
-						if(!ErrorLevel) 
+						if (!ErrorLevel) 
 						{
 							logSizeMB := this.byteToMB(logSize)
-							if(logSizeMB > aMaxSizeMBLogFile)
+							if (logSizeMB > aMaxSizeMBLogFile)
 							{  ; close the file and start a new one
 								this._ignorePendingEntries := true ; don't let finalizeLog()/initalizeNewLogFile() clear the array (array := [])
 								errLvl += this.finalizeLog()
@@ -589,10 +589,10 @@ class log
 
 		; check that the source file actually exists
 		errLvl := !FileExist(aCurrentFileName_FullPath)
-		if(!errLvl)
+		if (!errLvl)
 		{
 			; now error check the input values
-			if(this.isFilenameFullyPathed(aNewLogFilename))
+			if (this.isFilenameFullyPathed(aNewLogFilename))
 			{
 				SplitPath, aNewLogFilename, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
 				aNewLogDir := OutDir ; overwrite any aNewLogDir we were given as input
@@ -609,9 +609,9 @@ class log
 				errLvl := ErrorLevel
 			}
 			
-			if(!errLvl)
+			if (!errLvl)
 			{
-				if(aNewLogFilename = "") ; destination file
+				if (aNewLogFilename = "") ; destination file
 				{ ; if "", move log to end of A_Index chain (e.g., MyLogFile_1.log)
 					SplitPath, aCurrentFileName_FullPath, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
 					
@@ -668,15 +668,15 @@ class log
 
 			; rotate/delete the files
 			new_Index := 0
-			if(totalNumbOldLogs > aMaxNumbOldLogs)
+			if (totalNumbOldLogs > aMaxNumbOldLogs)
 			{
 				numbLogsToDelete := totalNumbOldLogs - aMaxNumbOldLogs
 				Loop, %totalNumbOldLogs%
 				{
 					oldFilename := OutDir . "\" . OutNameNoExt . "_" . A_Index . "." OutExtension
-					if(FileExist(oldFilename))
+					if (FileExist(oldFilename))
 					{
-						if(A_Index <= numbLogsToDelete)
+						if (A_Index <= numbLogsToDelete)
 						{ ; delete the older/lower numbered files (makes way for the next step)
 							errLvl1 := this.deleteLog(oldFilename, aUseRecycleBin)
 							errLvl := errLvl + errLvl1
@@ -725,7 +725,7 @@ class log
 
 		; delete all the old files
 		SplitPath, aCurrentFileName_FullPath, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
-		if(useWildCard)
+		if (useWildCard)
 		{ ; the wildcard technique, which just deletes everything
 			candidateFilename := OutDir . "\" . OutNameNoExt . "_" . "*" . "." OutExtension
 			errLvl += this.deleteLog(candidateFilename, putInRecycleBin)
@@ -753,7 +753,7 @@ class log
 		doesExist := FileExist(fileToDelete)
 		if (doesExist)
 		{
-			if(putInRecycleBin)
+			if (putInRecycleBin)
 			{
 				FileRecycle, %fileToDelete%
 			}
@@ -781,9 +781,9 @@ class log
 		if this.isLogClassTurnedOff ; should this method/class be turned off?
 			return false ; if so, exit out before doing anything.
 
-		if(text != "")
+		if (text != "")
 		{
-			if(!USE_FILE_OBJECT)
+			if (!USE_FILE_OBJECT)
 			{
 				FileAppend, %text%, %filename%, %encoding%
 				errLvl := ErrorLevel
@@ -791,14 +791,14 @@ class log
 			else
 			{
 				file := FileOpen(filename, "a" , encoding)
-				if(file) ; no error occurred
+				if (file) ; no error occurred
 				{
 					bytesWritten := file.Write(text)
 					file.Close()
 					file := {} ; free up the object
 					
 					; error check: see if anything was written.  We already tested that (text != ""), which would write no bytes.
-					if(bytesWritten = 0)
+					if (bytesWritten = 0)
 					{
 						errLvl := true
 					}
@@ -834,7 +834,7 @@ class log
 	isFilenameFullyPathed(filename)
 	{ ; determine if a filename has a relative path or starts at the root (i.e., fully pathed)
 		SplitPath, filename, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
-		if(OutDrive != "")
+		if (OutDrive != "")
 			return true
 		else
 			return false
@@ -857,7 +857,7 @@ class log
 		aLogsTimeFormat := this.logsTimeFormat
 		plaintextString := ""
 		
-		if(encodedString != "")
+		if (encodedString != "")
 		{
 			; Replace $time var
 			if ( (InStr(encodedString, "$time")) OR (InStr(encodedString, "`%A_Now`%")) )
@@ -900,10 +900,10 @@ class log
 		stack := this.generateStack()
 		for each, entry in stack
 		{
-			if(A_Index <= numbCallsToSkipOver)
+			if (A_Index <= numbCallsToSkipOver)
 			{ ; do nothing
 			}
-			else if(A_Index <= maxNumbCalls)
+			else if (A_Index <= maxNumbCalls)
 			{
 				str .= "Line: " . entry.line . "`tCalled: " . entry.what "`tFile: " entry.file "`n"
 			}
@@ -927,16 +927,5 @@ class log
 		return stack
 	}
 	
-	;EndRegion
-	
-	; Revision History
-	; ---------------------------------------------
-	;BeginRegion
-	; 2018-06-15
-	; * Initial fully commented draft of class
-	; * TODO: more error checking on the filename properties
-	;
-	; 2018-06-08
-	; * This folly begins
 	;EndRegion
 }
