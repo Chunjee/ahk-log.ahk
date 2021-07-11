@@ -1,5 +1,6 @@
-Class Log_class
-{ ; Class that handles writing to a log file
+class log
+{ 
+	; Class that handles writing to a log file
 	; This class makes working with a log file much easier.  Once created, you can write to a log file with a single method call.
 	; Each instance of the object supports a single log file (and its inactive older versions).  To use multiple log files (with separate names) create multiple instances.
 	; The log files will be tidied up and rotated automatically.
@@ -7,20 +8,20 @@ Class Log_class
 	; Log files may be limited by size, and when the threshold is reached the file will be moved to an inactive filename and a new log started.  
 	;
 	; A brief usage example is as follows:
-	;	global log := new LogClass(“MyLogFile”)
+	;	global log := new log(“MyLogFile”)
 	;	log.initalizeNewLogFile(false, “Header text to appear at the start of the new file”)
 	;	log.addLogEntry(“Your 1st message to put in the log file”)
 	;	log.addLogEntry(“Your next message to put in the log file”)
 	;	log.finalizeLog(“Footer text to appear at the very end of your log, which you are done with.”)
 	;
-	; This LogClass is inspired (very much so) by the pre-AHK built-in classes (circa 2009) file Log.ahk
+	; This class is inspired (very much so) by the pre-AHK built-in classes (circa 2009) file Log.ahk
 	;
 	; The <name>String properties (e.g., preEntryString, HeaderString, etc.) may be set via initalizeNewLogFile() or individually.  
 	; They are strings that will be applied automatically when creating/ending a log file, or adding a new log message/entry.  This allows you to apply a common format (or information) to every logfile or log entry.
 	; The String properties all accept variables which may be expanded when written.
-		; * $time or %A_Now% expands to the time the log entry is written (as formatted according to this.logsTimeFormat).
-		; * $printStack expands to a list of the function calls which caused the log entry to be written.
-		; * %Var% expands to whatever value variable Var is, but Var must be a global/built-in variable.
+	;	* $time or %A_Now% expands to the time the log entry is written (as formatted according to this.logsTimeFormat).
+	;	* $printStack expands to a list of the function calls which caused the log entry to be written.
+	;	* %Var% expands to whatever value variable Var is, but Var must be a global/built-in variable.
 	; These String property variables may be used in the log entries too (e.g., by this.addLogEntry(entry))
 
 
@@ -34,9 +35,6 @@ Class Log_class
 		; 	aMaxSizeMBLogFile -> The maximum size (in megabytes) before a log file is automatically closed and rotated to a new file.  0 or less is infinite (the default).  
 		; 	aLogDir -> 1/3 of the log's full filename (filename -> aLogDir\aLogBaseFilename.aLogExten).  The default is A_WorkingDir.
 		; 	aLogExten -> 1/3 of the log's full filename (filename -> aLogDir\aLogBaseFilename.aLogExten).  The default is "log".
-		
-		this._classVersion := 0.2.0
-		this._classAlterDate := "2018-09-30"
 		
 		
 		; establish any default values
@@ -110,14 +108,6 @@ Class Log_class
 	; Properties
 	; ---------------------------------------------
 	;BeginRegion
-	
-	classVersion
-	{ ; (Read-Only)  Just the revision/version number of this class
-		get
-		{
-			return this._classVersion
-		}
-	}
 
 	; List
 	; -------------------
